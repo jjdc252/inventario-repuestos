@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import * as XLSX from "xlsx";
-import Papa from "papaparse";
 import { Search, Package, MapPin, Plus, Edit2, Trash2, Archive, Grid } from "lucide-react";
 import {
   collection,
@@ -51,7 +49,6 @@ function App() {
       setInventario(data);
     } catch (error) {
       console.error("Error al cargar inventario:", error);
-      alert("Error al conectar con Firebase. Verifica tu configuración.");
     }
   };
 
@@ -126,7 +123,6 @@ function App() {
       cargarInventario();
     } catch (error) {
       console.error("Error al actualizar producto:", error);
-      alert("❌ Error al actualizar");
     }
   };
 
@@ -140,7 +136,6 @@ function App() {
       cargarInventario();
     } catch (error) {
       console.error("Error al eliminar producto:", error);
-      alert("❌ Error al eliminar");
     }
   };
 
@@ -156,7 +151,7 @@ function App() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-lg">
                 <Package className="text-white" size={28} />
@@ -375,38 +370,42 @@ function App() {
                 Inventario Completo ({inventario.length} productos)
               </h2>
               <div className="space-y-3">
-                {inventario.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800">{item.nombre}</h4>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs text-gray-500">{item.ubicacion}</span>
-                        {item.marca && (
-                          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
-                            {item.marca}
+                {inventario.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No hay productos en el inventario</p>
+                ) : (
+                  inventario.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-800">{item.nombre}</h4>
+                        <div className="flex items-center gap-3 mt-1 flex-wrap">
+                          <span className="text-xs text-gray-500">{item.ubicacion}</span>
+                          {item.marca && (
+                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                              {item.marca}
+                            </span>
+                          )}
+                          <span className={`${getColorCantidad(item.cantidad)} text-white text-xs px-2 py-0.5 rounded-full font-medium`}>
+                            {item.cantidad} unid.
                           </span>
-                        )}
-                        <span className={`${getColorCantidad(item.cantidad)} text-white text-xs px-2 py-0.5 rounded-full font-medium`}>
-                          {item.cantidad} unid.
-                        </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => actualizarProducto(item.id)}
+                          className="bg-yellow-100 text-yellow-700 p-2 rounded-lg hover:bg-yellow-200 transition-all"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => eliminarProducto(item.id)}
+                          className="bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200 transition-all"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => actualizarProducto(item.id)}
-                        className="bg-yellow-100 text-yellow-700 p-2 rounded-lg hover:bg-yellow-200 transition-all"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => eliminarProducto(item.id)}
-                        className="bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200 transition-all"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
