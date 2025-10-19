@@ -10,7 +10,6 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-// Función para normalizar texto
 const normalizarTexto = (texto) =>
   texto
     .toLowerCase()
@@ -18,7 +17,6 @@ const normalizarTexto = (texto) =>
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
 
-// Función de similitud
 const similitud = (a, b) => {
   const len = Math.max(a.length, b.length);
   let same = 0;
@@ -41,7 +39,6 @@ function App() {
     marca: "",
   });
 
-  // Cargar inventario desde Firebase
   const cargarInventario = async () => {
     try {
       const snapshot = await getDocs(collection(db, "inventario"));
@@ -56,7 +53,6 @@ function App() {
     cargarInventario();
   }, []);
 
-  // Búsqueda en tiempo real
   useEffect(() => {
     if (busqueda.trim() === "") {
       setResultado([]);
@@ -83,7 +79,6 @@ function App() {
     setResultado(resultados);
   }, [busqueda, inventario]);
 
-  // Agregar producto
   const agregarProducto = async () => {
     if (!nuevoProducto.nombre || !nuevoProducto.cantidad || !nuevoProducto.ubicacion) {
       alert("Por favor completa todos los campos obligatorios.");
@@ -108,7 +103,6 @@ function App() {
     }
   };
 
-  // Actualizar producto
   const actualizarProducto = async (id) => {
     const item = inventario.find(i => i.id === id);
     if (!item) return;
@@ -126,7 +120,6 @@ function App() {
     }
   };
 
-  // Eliminar producto
   const eliminarProducto = async (id) => {
     if (!confirm("¿Seguro que quieres eliminar este producto?")) return;
     try {
@@ -139,7 +132,6 @@ function App() {
     }
   };
 
-  // Color según cantidad
   const getColorCantidad = (cantidad) => {
     if (cantidad >= 15) return "bg-green-500";
     if (cantidad >= 8) return "bg-yellow-500";
@@ -148,7 +140,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -190,10 +181,8 @@ function App() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Vista de Búsqueda */}
         {vistaActual === "buscar" && (
           <div className="space-y-6">
-            {/* Buscador Principal */}
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={24} />
@@ -213,7 +202,6 @@ function App() {
               )}
             </div>
 
-            {/* Resultados */}
             {busqueda === "" ? (
               <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
                 <div className="bg-gradient-to-br from-blue-100 to-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -304,10 +292,8 @@ function App() {
           </div>
         )}
 
-        {/* Vista de Gestión */}
         {vistaActual === "gestionar" && (
           <div className="space-y-6">
-            {/* Formulario de Agregar */}
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-gradient-to-br from-green-500 to-emerald-500 p-2 rounded-lg">
@@ -363,7 +349,6 @@ function App() {
               </div>
             </div>
 
-            {/* Lista de Inventario */}
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Archive className="text-blue-600" size={24} />
